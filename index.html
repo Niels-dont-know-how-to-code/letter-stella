@@ -13,7 +13,6 @@
         html, body { width: 100%; height: 100%; overflow: hidden; }
         body { background: #080710; font-family: 'Cormorant Garamond', Georgia, serif; }
 
-        /* ======== GRAIN ======== */
         .grain {
             position: fixed; inset: 0;
             z-index: 9999; pointer-events: none; opacity: 0.035;
@@ -63,8 +62,6 @@
             transform: rotate(-0.8deg) translateY(50px);
             opacity: 0;
         }
-
-        /* Diagonal fold lines on body */
         .envelope::before {
             content: ''; position: absolute; inset: 0;
             background:
@@ -72,50 +69,29 @@
                 linear-gradient(to bottom left, transparent 48.5%, rgba(0,0,0,0.03) 49.5%, transparent 50.5%);
             border-radius: 4px; pointer-events: none; z-index: 1;
         }
-
-        /* Bottom seam line */
         .envelope-seam {
-            position: absolute;
-            bottom: 28%;
-            left: 8%; right: 8%;
-            height: 1px;
+            position: absolute; bottom: 28%; left: 8%; right: 8%; height: 1px;
             background: linear-gradient(to right, transparent, rgba(0,0,0,0.06), transparent);
             pointer-events: none; z-index: 1;
         }
-
-        /* Surface glow beneath */
         .envelope-shadow {
-            position: absolute;
-            bottom: -14px;
-            left: 8%; right: 8%;
-            height: 28px;
+            position: absolute; bottom: -14px; left: 8%; right: 8%; height: 28px;
             background: radial-gradient(ellipse, rgba(180,140,80,0.06) 0%, transparent 70%);
-            filter: blur(8px);
-            pointer-events: none;
+            filter: blur(8px); pointer-events: none;
         }
-
-        /* "For Stella" on envelope */
         .envelope-name {
-            position: absolute;
-            bottom: 36%;
-            left: 50%; transform: translateX(-50%);
-            font-family: 'Caveat', cursive;
-            font-size: 20px;
-            color: rgba(70,45,20,0.45);
-            letter-spacing: 0.5px;
-            pointer-events: none; z-index: 4;
-            white-space: nowrap;
+            position: absolute; bottom: 36%; left: 50%; transform: translateX(-50%);
+            font-family: 'Caveat', cursive; font-size: 20px;
+            color: rgba(70,45,20,0.45); letter-spacing: 0.5px;
+            pointer-events: none; z-index: 4; white-space: nowrap;
         }
 
-        /* Flap — shorter, gentler triangle */
+        /* Flap */
         .envelope-flap {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 85px;
+            position: absolute; top: 0; left: 0; width: 100%; height: 85px;
             transform-origin: center top;
             transform-style: preserve-3d;
-            will-change: transform;
-            z-index: 3;
+            will-change: transform; z-index: 3;
         }
         .flap-front {
             position: absolute; inset: 0;
@@ -133,8 +109,7 @@
             position: absolute; inset: 0;
             background: linear-gradient(180deg, #d9c48a 0%, #cdb070 100%);
             clip-path: polygon(0 0, 100% 0, 50% 100%);
-            transform: rotateX(180deg);
-            backface-visibility: hidden;
+            transform: rotateX(180deg); backface-visibility: hidden;
         }
         .envelope-flap.opening {
             animation: flapOpen 0.6s ease-in-out forwards;
@@ -144,25 +119,89 @@
             100% { transform: rotateX(180deg); }
         }
 
-        /* Letter preview paper */
+        /* Letter preview */
         .letter-preview {
-            position: absolute;
-            bottom: 18px; left: 10%; width: 80%; height: 55%;
+            position: absolute; bottom: 18px; left: 10%; width: 80%; height: 55%;
             background: linear-gradient(175deg, #f7f2ea 0%, #f0ebe0 100%);
             border-radius: 1px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             z-index: 1;
             transition: transform 0.5s cubic-bezier(0.22,0.61,0.36,1);
         }
-        .letter-preview.sliding {
-            transform: translateY(-100px);
+        .letter-preview.sliding { transform: translateY(-100px); }
+
+        /* ======== SECOND SEAL (hidden under flap) ======== */
+        .seal-inner {
+            position: absolute;
+            top: 20px; left: 50%;
+            transform: translateX(-50%) scale(0.5);
+            display: flex; flex-direction: column;
+            align-items: center; gap: 10px;
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .seal-inner.visible {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+            pointer-events: auto;
+        }
+        .seal-inner-wax {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 38% 35%, #cc3b2e, #a52a2a, #7a1a1a, #5c1212);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow:
+                0 3px 8px rgba(0,0,0,0.5),
+                0 0 0 2px rgba(100,20,15,0.35),
+                inset 0 2px 3px rgba(255,200,180,0.2),
+                inset 0 -3px 5px rgba(40,0,0,0.4);
+            animation: sealGlow 2.5s ease-in-out infinite;
+            transition: box-shadow 0.3s ease;
+        }
+        .seal-inner-wax::before {
+            content: ''; position: absolute; inset: 5px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,220,200,0.1);
+            pointer-events: none;
+        }
+        .seal-inner-wax:hover {
+            animation: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.5), 0 0 0 2px rgba(100,20,15,0.35),
+                0 0 30px rgba(220,90,40,0.3),
+                inset 0 2px 3px rgba(255,200,180,0.2), inset 0 -3px 5px rgba(40,0,0,0.4);
+        }
+        .seal-inner-wax.shake {
+            animation: sealInnerShake 0.4s ease-in-out !important;
+        }
+        @keyframes sealInnerShake {
+            0%, 100% { transform: rotate(0); }
+            20%  { transform: rotate(-4deg); }
+            40%  { transform: rotate(4deg); }
+            60%  { transform: rotate(-2deg); }
+            80%  { transform: rotate(1deg); }
+        }
+        .seal-inner-label {
+            font-family: 'Caveat', cursive;
+            font-size: 19px; font-weight: 600;
+            color: rgba(60,35,15,0.5);
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+        }
+        .seal-inner.visible .seal-inner-label {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        /* ======== WAX SEAL ======== */
+        /* ======== MAIN WAX SEAL ======== */
         .wax-seal {
-            position: absolute;
-            top: 54px;
-            left: 50%; transform: translateX(-50%);
+            position: absolute; top: 54px; left: 50%;
+            transform: translateX(-50%);
             width: 56px; height: 56px;
             border-radius: 50%;
             background: radial-gradient(circle at 38% 35%, #cc3b2e, #a52a2a, #7a1a1a, #5c1212);
@@ -184,20 +223,16 @@
             border: 1px solid rgba(255,220,200,0.12);
             pointer-events: none;
         }
-        /* Wax drip imperfections */
         .wax-seal::after {
             content: ''; position: absolute;
             width: 10px; height: 6px;
             background: radial-gradient(ellipse, #943020, transparent);
-            bottom: -2px; left: 18px;
-            border-radius: 50%;
-            opacity: 0.5;
-            pointer-events: none;
+            bottom: -2px; left: 18px; border-radius: 50%;
+            opacity: 0.5; pointer-events: none;
         }
         .seal-letter {
             font-family: 'Cormorant Garamond', Georgia, serif;
-            font-style: italic; font-weight: 500;
-            font-size: 24px;
+            font-style: italic; font-weight: 500; font-size: 24px;
             color: rgba(255,230,210,0.8);
             text-shadow: 0 1px 2px rgba(0,0,0,0.4);
             line-height: 1; padding-top: 2px;
@@ -240,7 +275,7 @@
             80%  { transform: translateX(-50%) rotate(1deg); }
         }
 
-        /* Instruction + locked message */
+        /* Instruction + messages */
         .instruction {
             font-family: 'Cormorant Garamond', Georgia, serif;
             font-style: italic; font-size: 14px;
@@ -252,111 +287,76 @@
         .locked-msg {
             margin-top: 16px; z-index: 10;
             min-height: 28px;
-            font-family: 'Caveat', cursive;
-            font-size: 18px;
+            font-family: 'Caveat', cursive; font-size: 18px;
             color: rgba(200,170,130,0.7);
             text-align: center;
-            opacity: 0;
-            transform: translateY(4px);
+            opacity: 0; transform: translateY(4px);
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
-        .locked-msg.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .locked-msg.show { opacity: 1; transform: translateY(0); }
 
         /* ======== THE LETTER ======== */
         .letter-container {
             position: fixed; inset: 0;
-            overflow-y: auto;
-            display: flex; padding: 24px 16px;
+            overflow-y: auto; display: flex; padding: 24px 16px;
             background: radial-gradient(ellipse at 50% 30%, #12101a 0%, #0a0810 40%, #080710 100%);
             z-index: 5; pointer-events: none; opacity: 0;
             transition: opacity 0.4s ease;
         }
-        .letter-container.visible {
-            pointer-events: auto; opacity: 1; z-index: 50;
-        }
+        .letter-container.visible { pointer-events: auto; opacity: 1; z-index: 50; }
         .letter-container::-webkit-scrollbar { width: 4px; }
         .letter-container::-webkit-scrollbar-track { background: transparent; }
         .letter-container::-webkit-scrollbar-thumb { background: rgba(180,150,100,0.2); border-radius: 2px; }
 
         .letter {
-            position: relative;
-            margin: auto;
-            width: min(540px, 90vw);
-            flex-shrink: 0;
+            position: relative; margin: auto;
+            width: min(540px, 90vw); flex-shrink: 0;
             background:
                 radial-gradient(ellipse at 10% 8%, rgba(170,130,70,0.07) 0%, transparent 50%),
                 radial-gradient(ellipse at 92% 85%, rgba(160,120,60,0.05) 0%, transparent 45%),
                 radial-gradient(ellipse at 50% 50%, #f5f0e8 0%, #ede7d9 100%);
-            padding: 56px 48px;
-            border-radius: 2px;
+            padding: 56px 48px; border-radius: 2px;
             box-shadow:
                 0 4px 20px rgba(0,0,0,0.3),
                 0 16px 56px rgba(0,0,0,0.2),
                 inset 0 0 40px rgba(150,120,60,0.07);
-            transform: scale(0.15) translateY(80px);
-            opacity: 0;
+            transform: scale(0.15) translateY(80px); opacity: 0;
             will-change: transform, opacity;
             transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.4s ease;
         }
-        .letter.revealed {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
-
-        /* Paper texture overlay */
+        .letter.revealed { transform: scale(1) translateY(0); opacity: 1; }
         .letter::before {
-            content: ''; position: absolute; inset: 0;
-            border-radius: 2px;
-            filter: url(#letter-texture);
-            opacity: 0.18;
-            mix-blend-mode: multiply;
-            pointer-events: none;
+            content: ''; position: absolute; inset: 0; border-radius: 2px;
+            filter: url(#letter-texture); opacity: 0.18;
+            mix-blend-mode: multiply; pointer-events: none;
         }
-
-        /* Decorative inner border — faded at corners */
         .letter::after {
-            content: ''; position: absolute;
-            inset: 16px;
-            border: 1px solid rgba(180,150,100,0.18);
-            pointer-events: none;
+            content: ''; position: absolute; inset: 16px;
+            border: 1px solid rgba(180,150,100,0.18); pointer-events: none;
             mask-image: radial-gradient(ellipse at center, white 60%, transparent 100%);
             -webkit-mask-image: radial-gradient(ellipse at center, white 60%, transparent 100%);
         }
-
-        /* Fold creases — letter was folded in thirds */
         .letter-fold {
-            position: absolute;
-            left: 8%; right: 8%;
-            height: 1px;
+            position: absolute; left: 8%; right: 8%; height: 1px;
             background: linear-gradient(to right, transparent, rgba(160,130,80,0.1), transparent);
             pointer-events: none; z-index: 3;
         }
         .letter-fold-1 { top: 33%; }
         .letter-fold-2 { top: 66%; }
-
-        /* Faint ruled lines behind text */
         .letter-lines {
-            position: absolute;
-            inset: 56px 48px;
+            position: absolute; inset: 56px 48px;
             background-image: repeating-linear-gradient(
                 transparent, transparent 32px,
                 rgba(170,140,90,0.05) 32px, rgba(170,140,90,0.05) 33px
             );
             pointer-events: none; z-index: 1;
         }
-
         .flourish { display: block; margin: 0 auto 28px; opacity: 0.4; }
-
         .letter-content { position: relative; z-index: 2; }
-
         .greeting {
             font-family: 'Cormorant Garamond', Georgia, serif;
             font-style: italic; font-weight: 500;
-            font-size: 28px; color: #2c1810;
-            margin-bottom: 28px;
+            font-size: 28px; color: #2c1810; margin-bottom: 28px;
         }
         .para {
             font-family: 'Caveat', cursive;
@@ -379,14 +379,11 @@
             font-size: 28px; font-weight: 600;
             color: #2c1810; margin-top: 28px;
         }
-
         .reveal {
             opacity: 0; transform: translateY(10px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        .reveal.shown {
-            opacity: 1; transform: translateY(0);
-        }
+        .reveal.shown { opacity: 1; transform: translateY(0); }
 
         /* ======== RESPONSIVE ======== */
         @media (max-width: 480px) {
@@ -395,6 +392,9 @@
             .wax-seal { top: 42px; width: 48px; height: 48px; }
             .seal-letter { font-size: 20px; }
             .envelope-name { font-size: 17px; }
+            .seal-inner { top: 15px; }
+            .seal-inner-wax { width: 44px; height: 44px; }
+            .seal-inner-label { font-size: 17px; }
             .letter-preview { height: 50%; }
             .letter-preview.sliding { transform: translateY(-80px); }
             .letter { padding: 42px 28px; }
@@ -411,6 +411,9 @@
             .wax-seal { top: 36px; width: 42px; height: 42px; }
             .seal-letter { font-size: 17px; }
             .envelope-name { font-size: 15px; }
+            .seal-inner { top: 10px; }
+            .seal-inner-wax { width: 38px; height: 38px; }
+            .seal-inner-label { font-size: 15px; }
             .letter-preview.sliding { transform: translateY(-70px); }
             .letter { padding: 32px 22px; }
             .letter-lines { inset: 32px 22px; }
@@ -446,6 +449,14 @@
             <span class="envelope-name">For Stella</span>
             <div class="letter-preview" id="letterPreview"></div>
             <div class="envelope-shadow"></div>
+
+            <!-- Second seal — hidden under the flap, revealed on Thursday -->
+            <div class="seal-inner" id="sealInner">
+                <div class="seal-inner-wax" id="sealInnerWax" role="button" tabindex="0"></div>
+                <p class="seal-inner-label">1 more day</p>
+            </div>
+
+            <!-- Main wax seal -->
             <div class="wax-seal" id="seal" role="button" tabindex="0" aria-label="Open the letter">
                 <span class="seal-letter">S</span>
             </div>
@@ -504,13 +515,27 @@
         var letterContainer = document.getElementById('letterContainer');
         var letter = document.getElementById('letter');
         var lockedMsg = document.getElementById('lockedMsg');
-        var opened = false;
+        var sealInner = document.getElementById('sealInner');
+        var sealInnerWax = document.getElementById('sealInnerWax');
+        var done = false;
 
-        // ---- TIMER: unlocks Thursday April 16 2026, midnight local time ----
-        var UNLOCK = new Date(2026, 3, 16); // month is 0-indexed
-        var isLocked = new Date() < UNLOCK;
+        // ---- DATES ----
+        var TEASE_DATE  = new Date(2026, 3, 16); // Thursday April 16 — seal opens, second seal
+        var UNLOCK_DATE = new Date(2026, 3, 17); // Friday April 17 — letter opens
+        var now = new Date();
 
-        var sillyMessages = [
+        // Test overrides: ?test=locked | ?test=tease | ?test=open
+        var testMode = new URLSearchParams(window.location.search).get('test');
+        var state;
+        if      (testMode === 'open')   state = 'unlocked';
+        else if (testMode === 'tease')  state = 'tease';
+        else if (testMode === 'locked') state = 'locked';
+        else if (now >= UNLOCK_DATE)    state = 'unlocked';
+        else if (now >= TEASE_DATE)     state = 'tease';
+        else                            state = 'locked';
+
+        // ---- MESSAGES ----
+        var lockedMessages = [
             "Not yet, Stella. Thursday.",
             "Nice try. The seal is stronger than your curiosity.",
             "Thursday. I promise it\u2019s worth the wait.",
@@ -527,48 +552,108 @@
             "You\u2019ve pressed this more times than I expected. Respect.",
             "The seal is now personally invested in making it to Thursday."
         ];
+        var teaseMessages = [
+            "Tomorrow. I mean it this time.",
+            "The second seal is even more stubborn than the first.",
+            "You made it this far. One more day won\u2019t hurt.",
+            "Not even your persistence can break this one early.",
+            "Friday. You\u2019re almost there, Stella.",
+            "Think of it as\u2026 delayed gratification.",
+            "The seal appreciates your patience. Kind of.",
+            "One. More. Day."
+        ];
         var msgIndex = 0;
+        var teaseMsgIndex = 0;
         var msgTimeout = null;
         var shakeTimeout = null;
 
-        if (isLocked) {
+        // ---- INIT ----
+        if (state === 'locked') {
             instruction.textContent = 'Opens Thursday';
-            // Auto-unlock if she waits with page open
+        } else if (state === 'tease') {
+            instruction.textContent = 'Press the seal to open';
+        } else {
+            instruction.textContent = 'Press the seal to open';
+        }
+
+        // Auto-advance state if page stays open
+        if (state !== 'unlocked') {
             var check = setInterval(function () {
-                if (new Date() >= UNLOCK) {
-                    isLocked = false;
+                var n = new Date();
+                if (n >= UNLOCK_DATE) {
+                    state = 'unlocked';
                     instruction.textContent = 'Press the seal to open';
                     lockedMsg.classList.remove('show');
                     clearInterval(check);
+                } else if (state === 'locked' && n >= TEASE_DATE) {
+                    state = 'tease';
+                    instruction.textContent = 'Press the seal to open';
+                    lockedMsg.classList.remove('show');
                 }
             }, 30000);
         }
 
-        function showLockedMsg() {
-            // Shake the seal
-            seal.classList.remove('shake');
-            void seal.offsetWidth; // force reflow to restart animation
-            seal.classList.add('shake');
-            clearTimeout(shakeTimeout);
-            shakeTimeout = setTimeout(function () { seal.classList.remove('shake'); }, 420);
-
-            // Show silly message
+        // ---- HELPERS ----
+        function showMsg(text, target) {
             lockedMsg.classList.remove('show');
             void lockedMsg.offsetWidth;
-            lockedMsg.textContent = sillyMessages[msgIndex % sillyMessages.length];
+            lockedMsg.textContent = text;
             lockedMsg.classList.add('show');
-            msgIndex++;
-
             clearTimeout(msgTimeout);
-            msgTimeout = setTimeout(function () {
-                lockedMsg.classList.remove('show');
-            }, 3000);
+            msgTimeout = setTimeout(function () { lockedMsg.classList.remove('show'); }, 3000);
         }
 
-        function open() {
-            if (opened) return;
-            if (isLocked) { showLockedMsg(); return; }
-            opened = true;
+        function shakeEl(el, cls) {
+            el.classList.remove(cls || 'shake');
+            void el.offsetWidth;
+            el.classList.add(cls || 'shake');
+            clearTimeout(shakeTimeout);
+            shakeTimeout = setTimeout(function () { el.classList.remove(cls || 'shake'); }, 420);
+        }
+
+        // ---- LOCKED: silly messages ----
+        function handleLocked() {
+            shakeEl(seal);
+            showMsg(lockedMessages[msgIndex % lockedMessages.length]);
+            msgIndex++;
+        }
+
+        // ---- TEASE: seal opens, reveals second seal ----
+        var teaseOpened = false;
+
+        function handleTease() {
+            if (done) return;
+            if (teaseOpened) return; // second seal is now active, handled separately
+            teaseOpened = true;
+
+            seal.classList.add('cracking');
+            instruction.style.opacity = '0';
+
+            // Flap opens
+            setTimeout(function () { flap.classList.add('opening'); }, 300);
+
+            // Reveal second seal (after flap is most of the way open)
+            setTimeout(function () {
+                sealInner.classList.add('visible');
+            }, 800);
+
+            // Show instruction for second seal
+            setTimeout(function () {
+                instruction.textContent = 'Almost\u2026';
+                instruction.style.opacity = '1';
+            }, 1400);
+        }
+
+        function handleTeaseSecondSeal() {
+            shakeEl(sealInnerWax, 'shake');
+            showMsg(teaseMessages[teaseMsgIndex % teaseMessages.length]);
+            teaseMsgIndex++;
+        }
+
+        // ---- UNLOCKED: full letter open ----
+        function handleOpen() {
+            if (done) return;
+            done = true;
 
             seal.classList.add('cracking');
             instruction.style.opacity = '0';
@@ -593,10 +678,28 @@
             }, 2100);
         }
 
-        seal.addEventListener('click', open);
-        seal.addEventListener('touchend', function (e) { e.preventDefault(); open(); });
+        // ---- MAIN SEAL CLICK ----
+        function onSealClick() {
+            if (state === 'locked')   return handleLocked();
+            if (state === 'tease')    return handleTease();
+            if (state === 'unlocked') return handleOpen();
+        }
+
+        seal.addEventListener('click', onSealClick);
+        seal.addEventListener('touchend', function (e) { e.preventDefault(); onSealClick(); });
         seal.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSealClick(); }
+        });
+
+        // ---- SECOND SEAL CLICK (tease day only) ----
+        function onInnerSealClick() {
+            if (state === 'tease') handleTeaseSecondSeal();
+        }
+
+        sealInnerWax.addEventListener('click', onInnerSealClick);
+        sealInnerWax.addEventListener('touchend', function (e) { e.preventDefault(); onInnerSealClick(); });
+        sealInnerWax.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onInnerSealClick(); }
         });
     })();
     </script>
