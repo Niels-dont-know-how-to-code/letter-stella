@@ -62,6 +62,14 @@
             transform: rotate(-0.8deg) translateY(50px);
             opacity: 0;
         }
+        .envelope.tease-active .envelope-name {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .envelope.tease-active .letter-preview {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
         .envelope::before {
             content: ''; position: absolute; inset: 0;
             background:
@@ -112,11 +120,12 @@
             transform: rotateX(180deg); backface-visibility: hidden;
         }
         .envelope-flap.opening {
-            animation: flapOpen 0.6s ease-in-out forwards;
+            animation: flapOpen 0.7s ease-in-out forwards;
         }
         @keyframes flapOpen {
-            0%   { transform: rotateX(0deg); }
-            100% { transform: rotateX(180deg); }
+            0%   { transform: rotateX(0deg);   opacity: 1; }
+            55%  { transform: rotateX(95deg);  opacity: 1; }
+            100% { transform: rotateX(160deg); opacity: 0; }
         }
 
         /* Letter preview */
@@ -130,28 +139,75 @@
         }
         .letter-preview.sliding { transform: translateY(-100px); }
 
-        /* ======== SECOND SEAL (hidden under flap) ======== */
+        /* ======== TEASE CARD (parchment note revealed on Thursday) ======== */
         .seal-inner {
             position: absolute;
-            top: 20px; left: 50%;
-            transform: translateX(-50%) scale(0.5);
-            display: flex; flex-direction: column;
-            align-items: center; gap: 10px;
-            z-index: 2;
+            top: 50%; left: 50%;
+            width: 76%;
+            padding: 18px 16px 20px;
+            display: flex; flex-direction: column; align-items: center;
+            background:
+                linear-gradient(178deg, #f4e8c6 0%, #ecdcae 55%, #e2cd9a 100%);
+            border-radius: 2px;
+            transform: translate(-50%, -50%) rotate(-2.5deg) scale(0.7);
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 2;
+            box-shadow:
+                0 7px 16px rgba(0,0,0,0.35),
+                0 2px 5px rgba(0,0,0,0.22),
+                inset 0 0 0 1px rgba(120,80,30,0.15),
+                inset 0 0 40px rgba(120,75,20,0.08);
+            transition:
+                opacity 0.55s ease,
+                transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .seal-inner::before {
+            content: ''; position: absolute; inset: 5px;
+            border: 1px dashed rgba(110,70,20,0.18);
+            border-radius: 1px;
+            pointer-events: none;
+        }
+        .seal-inner::after {
+            content: ''; position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 10%, rgba(90,50,10,0.07), transparent 50%),
+                radial-gradient(ellipse at 85% 90%, rgba(90,50,10,0.06), transparent 55%);
+            pointer-events: none;
         }
         .seal-inner.visible {
             opacity: 1;
-            transform: translateX(-50%) scale(1);
+            transform: translate(-50%, -50%) rotate(-2.5deg) scale(1);
             pointer-events: auto;
         }
+        .seal-inner-top,
+        .seal-inner-bottom {
+            font-family: 'Caveat', cursive;
+            font-size: 22px;
+            font-weight: 500;
+            color: #4a3319;
+            text-align: center;
+            margin: 0;
+            letter-spacing: 0.3px;
+            font-style: italic;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 0.5s ease 0.25s, transform 0.5s ease 0.25s;
+            position: relative;
+            z-index: 1;
+        }
+        .seal-inner-top    { margin-bottom: 10px; }
+        .seal-inner-bottom { margin-top: 12px; }
+        .seal-inner.visible .seal-inner-top,
+        .seal-inner.visible .seal-inner-bottom {
+            opacity: 1;
+            transform: translateY(0);
+        }
         .seal-inner-wax {
-            width: 50px; height: 50px;
+            width: 46px; height: 46px;
             border-radius: 50%;
+            position: relative;
             background: radial-gradient(circle at 38% 35%, #cc3b2e, #a52a2a, #7a1a1a, #5c1212);
-            display: flex; align-items: center; justify-content: center;
             cursor: pointer; user-select: none;
             -webkit-tap-highlight-color: transparent;
             box-shadow:
@@ -161,17 +217,18 @@
                 inset 0 -3px 5px rgba(40,0,0,0.4);
             animation: sealGlow 2.5s ease-in-out infinite;
             transition: box-shadow 0.3s ease;
+            z-index: 1;
         }
         .seal-inner-wax::before {
             content: ''; position: absolute; inset: 5px;
             border-radius: 50%;
-            border: 1px solid rgba(255,220,200,0.1);
+            border: 1px solid rgba(255,220,200,0.12);
             pointer-events: none;
         }
         .seal-inner-wax:hover {
             animation: none;
             box-shadow: 0 3px 8px rgba(0,0,0,0.5), 0 0 0 2px rgba(100,20,15,0.35),
-                0 0 30px rgba(220,90,40,0.3),
+                0 0 28px rgba(220,90,40,0.35),
                 inset 0 2px 3px rgba(255,200,180,0.2), inset 0 -3px 5px rgba(40,0,0,0.4);
         }
         .seal-inner-wax.shake {
@@ -183,19 +240,6 @@
             40%  { transform: rotate(4deg); }
             60%  { transform: rotate(-2deg); }
             80%  { transform: rotate(1deg); }
-        }
-        .seal-inner-label {
-            font-family: 'Caveat', cursive;
-            font-size: 19px; font-weight: 600;
-            color: rgba(60,35,15,0.5);
-            white-space: nowrap;
-            opacity: 0;
-            transform: translateY(4px);
-            transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
-        }
-        .seal-inner.visible .seal-inner-label {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         /* ======== MAIN WAX SEAL ======== */
@@ -398,9 +442,11 @@
             .wax-seal { top: 42px; width: 48px; height: 48px; }
             .seal-letter { font-size: 20px; }
             .envelope-name { font-size: 17px; }
-            .seal-inner { top: 15px; }
-            .seal-inner-wax { width: 44px; height: 44px; }
-            .seal-inner-label { font-size: 17px; }
+            .seal-inner { width: 80%; padding: 14px 12px 16px; }
+            .seal-inner-wax { width: 42px; height: 42px; }
+            .seal-inner-top, .seal-inner-bottom { font-size: 19px; }
+            .seal-inner-top { margin-bottom: 8px; }
+            .seal-inner-bottom { margin-top: 10px; }
             .letter-preview { height: 50%; }
             .letter-preview.sliding { transform: translateY(-80px); }
             .letter { padding: 42px 28px; }
@@ -418,9 +464,11 @@
             .wax-seal { top: 36px; width: 42px; height: 42px; }
             .seal-letter { font-size: 17px; }
             .envelope-name { font-size: 15px; }
-            .seal-inner { top: 10px; }
+            .seal-inner { width: 82%; padding: 12px 10px 14px; }
             .seal-inner-wax { width: 38px; height: 38px; }
-            .seal-inner-label { font-size: 15px; }
+            .seal-inner-top, .seal-inner-bottom { font-size: 17px; }
+            .seal-inner-top { margin-bottom: 6px; }
+            .seal-inner-bottom { margin-top: 8px; }
             .letter-preview.sliding { transform: translateY(-70px); }
             .letter { padding: 32px 22px; }
             .letter-lines { inset: 32px 22px; }
@@ -457,10 +505,11 @@
             <div class="letter-preview" id="letterPreview"></div>
             <div class="envelope-shadow"></div>
 
-            <!-- Second seal — hidden under the flap, revealed on Thursday -->
+            <!-- Tease card — hidden under the flap, revealed on Thursday -->
             <div class="seal-inner" id="sealInner">
+                <p class="seal-inner-top">one more day,</p>
                 <div class="seal-inner-wax" id="sealInnerWax" role="button" tabindex="0"></div>
-                <p class="seal-inner-label">1 more day</p>
+                <p class="seal-inner-bottom">my love</p>
             </div>
 
             <!-- Main wax seal -->
@@ -644,7 +693,10 @@
             instruction.style.opacity = '0';
 
             // Flap opens
-            setTimeout(function () { flap.classList.add('opening'); }, 300);
+            setTimeout(function () {
+                flap.classList.add('opening');
+                envelope.classList.add('tease-active');
+            }, 300);
 
             // Reveal second seal (after flap is most of the way open)
             setTimeout(function () {
